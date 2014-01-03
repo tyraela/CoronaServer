@@ -2546,53 +2546,5 @@ void Creature::SetWalk(bool enable, bool asDefault)
             addUnitState(UNIT_STAT_RUNNING);
     }
 
-    // Nothing changed?
-    if (enable == m_movementInfo.HasMovementFlag(MOVEFLAG_WALK_MODE))
-        return;
-
-    if (enable)
-        m_movementInfo.AddMovementFlag(MOVEFLAG_WALK_MODE);
-    else
-        m_movementInfo.RemoveMovementFlag(MOVEFLAG_WALK_MODE);
-
-    WorldPacket data(enable ? SMSG_SPLINE_MOVE_SET_WALK_MODE : SMSG_SPLINE_MOVE_SET_RUN_MODE, 9);
-    data << GetPackGUID();
-    SendMessageToSet(&data, true);
-}
-
-void Creature::SetLevitate(bool enable)
-{
-    if (enable)
-        m_movementInfo.AddMovementFlag(MOVEFLAG_LEVITATING);
-    else
-        m_movementInfo.RemoveMovementFlag(MOVEFLAG_LEVITATING);
-
-    // TODO: there should be analogic opcode for 2.43
-    // WorldPacket data(enable ? SMSG_SPLINE_MOVE_GRAVITY_DISABLE : SMSG_SPLINE_MOVE_GRAVITY_ENABLE, 9);
-    // data << GetPackGUID();
-    // SendMessageToSet(&data, true);
-}
-
-void Creature::SetRoot(bool enable)
-{
-    if (enable)
-        m_movementInfo.AddMovementFlag(MOVEFLAG_ROOT);
-    else
-        m_movementInfo.RemoveMovementFlag(MOVEFLAG_ROOT);
-
-    WorldPacket data(enable ? SMSG_SPLINE_MOVE_ROOT : SMSG_SPLINE_MOVE_UNROOT, 9);
-    data << GetPackGUID();
-    SendMessageToSet(&data, true);
-}
-
-void Creature::SetWaterWalk(bool enable)
-{
-    if (enable)
-        m_movementInfo.AddMovementFlag(MOVEFLAG_WATERWALKING);
-    else
-        m_movementInfo.RemoveMovementFlag(MOVEFLAG_WATERWALKING);
-
-    WorldPacket data(enable ? SMSG_SPLINE_MOVE_WATER_WALK : SMSG_SPLINE_MOVE_LAND_WALK, 9);
-    data << GetPackGUID();
-    SendMessageToSet(&data, true);
+	Unit::SetWalk(enable);
 }
