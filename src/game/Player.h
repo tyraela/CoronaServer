@@ -1717,9 +1717,6 @@ class MANGOS_DLL_SPEC Player : public Unit
             StopMirrorTimer(FIRE_TIMER);
         }
 
-        void SetRoot(bool enable) override;
-        void SetWaterWalk(bool enable) override;
-
         void JoinedChannel(Channel* c);
         void LeftChannel(Channel* c);
         void CleanupChannels();
