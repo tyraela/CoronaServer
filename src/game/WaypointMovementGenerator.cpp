@@ -205,7 +205,6 @@ void WaypointMovementGenerator<Creature>::StartMove(Creature& creature)
 
     if (nextNode.orientation != 100 && nextNode.delay != 0)
         init.SetFacing(nextNode.orientation);
-    creature.SetWalk(!creature.hasUnitState(UNIT_STAT_RUNNING_STATE) && !creature.IsLevitating(), false);
     init.Launch();
 }
 
