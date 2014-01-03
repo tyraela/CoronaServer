@@ -996,6 +996,9 @@ struct CharmInfo
         ReactStates GetReactState() { return m_reactState; }
         bool HasReactState(ReactStates state) { return (m_reactState == state); }
 
+        bool GetWalkingBeforeCharm() { return m_WalkingBeforeCharm; }
+        void SetWalkingBeforeCharm(bool enable) { m_WalkingBeforeCharm = enable; }
+
         void InitPossessCreateSpells();
         void InitCharmCreateSpells();
         void InitPetActionBar();
@@ -1020,13 +1023,14 @@ struct CharmInfo
         GlobalCooldownMgr& GetGlobalCooldownMgr() { return m_GlobalCooldownMgr; }
 
     private:
-        Unit* m_unit;
-        UnitActionBarEntry PetActionBar[MAX_UNIT_ACTION_BAR_INDEX];
-        CharmSpellEntry m_charmspells[CREATURE_MAX_SPELLS];
-        CommandStates   m_CommandState;
-        ReactStates     m_reactState;
-        uint32          m_petnumber;
-        GlobalCooldownMgr m_GlobalCooldownMgr;
+        Unit*               m_unit;
+        UnitActionBarEntry  PetActionBar[MAX_UNIT_ACTION_BAR_INDEX];
+        CharmSpellEntry     m_charmspells[CREATURE_MAX_SPELLS];
+        CommandStates       m_CommandState;
+        ReactStates         m_reactState;
+        uint32              m_petnumber;
+        GlobalCooldownMgr   m_GlobalCooldownMgr;
+        bool                m_WalkingBeforeCharm;
 };
 
 // used in CallForAllControlledUnits/CheckAllControlledUnits
