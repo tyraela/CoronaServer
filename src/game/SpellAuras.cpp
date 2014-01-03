@@ -3317,6 +3317,7 @@ void Aura::HandleModPossess(bool apply, bool Real)
             charmInfo->InitPossessCreateSpells();
             charmInfo->SetReactState(REACT_PASSIVE);
             charmInfo->SetCommandState(COMMAND_STAY);
+            charmInfo->SetWalkingBeforeCharm(target->IsWalking());
         }
 
         p_caster->PossessSpellInitialize();
@@ -3329,11 +3330,12 @@ void Aura::HandleModPossess(bool apply, bool Real)
         {
             ((Player*)target)->SetClientControl(target, 0);
         }
+        
+        target->SetWalk(false);
     }
     else
     {
         p_caster->SetCharm(NULL);
-
         p_caster->SetClientControl(target, 0);
         p_caster->SetMover(NULL);
 
@@ -3357,21 +3359,23 @@ void Aura::HandleModPossess(bool apply, bool Real)
 
         target->SetCharmerGuid(ObjectGuid());
 
-        if (target->GetTypeId() == TYPEID_PLAYER)
+        if (CharmInfo* charmInfo = target->InitCharmInfo(target))
         {
-            ((Player*)target)->setFactionForRace(target->getRace());
-            ((Player*)target)->SetClientControl(target, 1);
-        }
-        else if (target->GetTypeId() == TYPEID_UNIT)
-        {
-            CreatureInfo const* cinfo = ((Creature*)target)->GetCreatureInfo();
-            target->setFaction(cinfo->faction_A);
+            target->SetWalk(charmInfo->GetWalkingBeforeCharm());
+            charmInfo->SetWalkingBeforeCharm(target->IsWalking());
         }
 
         if (target->GetTypeId() == TYPEID_UNIT)
         {
+            CreatureInfo const* cinfo = ((Creature*)target)->GetCreatureInfo();
+            target->setFaction(cinfo->faction_A);
             ((Creature*)target)->AIM_Initialize();
             target->AttackedBy(caster);
+        }
+        else if (target->GetTypeId() == TYPEID_PLAYER)
+        {
+            ((Player*)target)->setFactionForRace(target->getRace());
+            ((Player*)target)->SetClientControl(target, 1);
         }
     }
 }
