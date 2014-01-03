@@ -9864,3 +9864,115 @@ void Unit::DisableSpline()
     m_movementInfo.RemoveMovementFlag(MovementFlags(MOVEFLAG_SPLINE_ENABLED | MOVEFLAG_FORWARD));
     movespline->_Interrupt();
 }
+
+
+void Unit::SetWalk(bool enable, bool asDefault)
+{
+    if (enable == m_movementInfo.HasMovementFlag(MOVEFLAG_WALK_MODE))
+        return;
+
+    if (enable)
+        m_movementInfo.AddMovementFlag(MOVEFLAG_WALK_MODE);
+    else
+        m_movementInfo.RemoveMovementFlag(MOVEFLAG_WALK_MODE);
+
+	
+    WorldPacket data(enable ? SMSG_SPLINE_MOVE_SET_WALK_MODE : SMSG_SPLINE_MOVE_SET_RUN_MODE, 9);
+    data << GetPackGUID();
+    SendMessageToSet(&data, true);
+}
+
+void Unit::SetLevitate(bool enable)
+{
+    if (enable == m_movementInfo.HasMovementFlag(MOVEFLAG_LEVITATING))
+        return;
+
+    if (enable)
+        m_movementInfo.AddMovementFlag(MOVEFLAG_LEVITATING);
+    else
+        m_movementInfo.RemoveMovementFlag(MOVEFLAG_LEVITATING);
+
+    WorldPacket data(enable ? SMSG_SPLINE_MOVE_SET_HOVER : SMSG_SPLINE_MOVE_UNSET_HOVER, 12);
+    data << GetPackGUID();
+    SendMessageToSet(&data, true);
+}
+
+void Unit::SetSwim(bool enable)
+{
+    if (enable == m_movementInfo.HasMovementFlag(MOVEFLAG_SWIMMING))
+        return;
+
+    if (enable)
+        m_movementInfo.AddMovementFlag(MOVEFLAG_SWIMMING);
+    else
+        m_movementInfo.RemoveMovementFlag(MOVEFLAG_SWIMMING);
+
+
+    WorldPacket data(enable ? SMSG_SPLINE_MOVE_START_SWIM : SMSG_SPLINE_MOVE_STOP_SWIM, 9);
+    data << GetPackGUID();
+    SendMessageToSet(&data, true);
+}
+
+void Unit::SetCanFly(bool enable)
+{
+    if (enable == m_movementInfo.HasMovementFlag(MOVEFLAG_CAN_FLY))
+        return;
+
+    if (enable)
+        m_movementInfo.AddMovementFlag(MOVEFLAG_CAN_FLY);
+    else
+        m_movementInfo.RemoveMovementFlag(MOVEFLAG_CAN_FLY);
+
+
+    WorldPacket data(enable ? SMSG_MOVE_SET_CAN_FLY : SMSG_MOVE_UNSET_CAN_FLY, 12);
+    data << GetPackGUID();
+    SendMessageToSet(&data, true);
+}
+
+void Unit::SetWaterWalk(bool enable)
+{
+    if (enable == m_movementInfo.HasMovementFlag(MOVEFLAG_WATERWALKING))
+        return;
+
+    if (enable)
+        m_movementInfo.AddMovementFlag(MOVEFLAG_WATERWALKING);
+    else
+        m_movementInfo.RemoveMovementFlag(MOVEFLAG_WATERWALKING);
+
+
+    WorldPacket data(enable ? SMSG_MOVE_WATER_WALK : SMSG_MOVE_LAND_WALK, 12);
+    data << GetPackGUID();
+    SendMessageToSet(&data, true);
+}
+
+void Unit::SetSafeFall(bool enable)
+{
+    if (enable == m_movementInfo.HasMovementFlag(MOVEFLAG_SAFE_FALL))
+        return;
+
+    if (enable)
+        m_movementInfo.AddMovementFlag(MOVEFLAG_SAFE_FALL);
+    else
+        m_movementInfo.RemoveMovementFlag(MOVEFLAG_SAFE_FALL);
+
+
+    WorldPacket data(enable ? SMSG_SPLINE_MOVE_FEATHER_FALL : SMSG_SPLINE_MOVE_NORMAL_FALL, 12);
+    data << GetPackGUID();
+    SendMessageToSet(&data, true);
+}
+
+void Unit::SetRoot(bool enable)
+{
+    if (enable == m_movementInfo.HasMovementFlag(MOVEFLAG_ROOT))
+        return;
+
+    if (enable)
+        m_movementInfo.AddMovementFlag(MOVEFLAG_ROOT);
+    else
+        m_movementInfo.RemoveMovementFlag(MOVEFLAG_ROOT);
+
+
+    WorldPacket data(enable ? SMSG_FORCE_MOVE_ROOT : SMSG_FORCE_MOVE_UNROOT, 12);
+    data << GetPackGUID();
+    SendMessageToSet(&data, true);
+}

@@ -1518,11 +1518,21 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         // if used additional args in ... part then floats must explicitly casted to double
         void SendHeartBeat();
 
-        bool IsLevitating() const { return m_movementInfo.HasMovementFlag(MOVEFLAG_LEVITATING); }
         bool IsWalking() const { return m_movementInfo.HasMovementFlag(MOVEFLAG_WALK_MODE); }
+        bool IsLevitating() const { return m_movementInfo.HasMovementFlag(MOVEFLAG_LEVITATING); }
+        bool IsSwimming() const { return m_movementInfo.HasMovementFlag(MOVEFLAG_SWIMMING); }
+        bool IsFlying() const { return m_movementInfo.HasMovementFlag(MOVEFLAG_CAN_FLY); }
+        bool IsWaterWalking() const { return m_movementInfo.HasMovementFlag(MOVEFLAG_WATERWALKING); }
+        bool IsSafeFalling() const { return m_movementInfo.HasMovementFlag(MOVEFLAG_SAFE_FALL); }
         bool IsRooted() const { return m_movementInfo.HasMovementFlag(MOVEFLAG_ROOT); }
-        virtual void SetRoot(bool /*enabled*/) {}
-        virtual void SetWaterWalk(bool /*enabled*/) {}
+
+        virtual void SetWalk(bool enable, bool asDefault = false);
+        void SetLevitate(bool disable);
+        void SetSwim(bool enable);
+        void SetCanFly(bool enable);
+        void SetWaterWalk(bool enable);
+        void SetSafeFall(bool enable);
+        void SetRoot(bool enable);
 
         void SetInFront(Unit const* target);
         void SetFacingTo(float ori);
