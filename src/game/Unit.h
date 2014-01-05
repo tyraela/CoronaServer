@@ -1523,7 +1523,8 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         void SendHeartBeat();
 
         bool IsWalking() const { return m_movementInfo.HasMovementFlag(MOVEFLAG_WALK_MODE); }
-        bool IsLevitating() const { return m_movementInfo.HasMovementFlag(MOVEFLAG_LEVITATING); }
+        bool IsHovering() const { return m_movementInfo.HasMovementFlag(MOVEFLAG_HOVER); }
+        bool IsLevitating() const { return IsHovering(); } // Alias function since we miss Optcode for Levitate in 2.4.3
         bool IsSwimming() const { return m_movementInfo.HasMovementFlag(MOVEFLAG_SWIMMING); }
         bool IsFlying() const { return m_movementInfo.HasMovementFlag(MOVEFLAG_CAN_FLY); }
         bool IsWaterWalking() const { return m_movementInfo.HasMovementFlag(MOVEFLAG_WATERWALKING); }
@@ -1531,7 +1532,8 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         bool IsRooted() const { return m_movementInfo.HasMovementFlag(MOVEFLAG_ROOT); }
 
         virtual void SetWalk(bool enable, bool asDefault = false);
-        void SetLevitate(bool disable);
+        void SetHover(bool enable);
+        void SetLevitate(bool enable){ SetHover(enable); } // Alias function since we miss Optcode for Levitate in 2.4.3
         void SetSwim(bool enable);
         void SetCanFly(bool enable);
         void SetWaterWalk(bool enable);

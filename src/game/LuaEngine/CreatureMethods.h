@@ -385,7 +385,7 @@ namespace LuaCreature
     {
         bool enable = luaL_optbool(L, 1, true);
 
-        creature->SetLevitate(enable);
+        creature->SetHover(enable);
         return 1;
     }
 

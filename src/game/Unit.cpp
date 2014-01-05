@@ -9882,7 +9882,7 @@ void Unit::SetWalk(bool enable, bool asDefault)
     SendMessageToSet(&data, true);
 }
 
-void Unit::SetLevitate(bool enable)
+void Unit::SetHover(bool enable)
 {
     if (enable == m_movementInfo.HasMovementFlag(MOVEFLAG_LEVITATING))
         return;
