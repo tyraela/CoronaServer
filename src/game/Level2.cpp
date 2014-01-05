@@ -4752,27 +4752,45 @@ bool ChatHandler::HandleWaterwalkCommand(char* args)
         return false;
     }
 
-    Player* player = getSelectedPlayer();
+    Player* target = getSelectedPlayer();
+    if (!target)
+        target = m_session->GetPlayer();
 
-    if (!player)
+    // check online security
+    if (HasLowerSecurity(target))
+        return false;
+    
+    target->SetWaterWalk(value);
+
+    PSendSysMessage(LANG_YOU_SET_WATERWALK, GetNameLink(target).c_str(), args);
+    return true;
+}
+
+bool ChatHandler::HandleHoverCommand(char* args)
+{
+    bool value;
+    if (!ExtractOnOff(&args, value))
     {
-        PSendSysMessage(LANG_NO_CHAR_SELECTED);
+        SendSysMessage(LANG_USE_BOL);
         SetSentErrorMessage(true);
         return false;
     }
 
+    Player* target = getSelectedPlayer();
+    if (!target)
+        target = m_session->GetPlayer();
+
     // check online security
-    if (HasLowerSecurity(player))
+    if (HasLowerSecurity(target))
         return false;
 
+    target->SetHover(value);
+    
     if (value)
-        player->SetWaterWalk(true);                         // ON
+        PSendSysMessage(LANG_HOVER_ENABLED, GetNameLink(target).c_str(), args);
     else
-        player->SetWaterWalk(false);                        // OFF
+        PSendSysMessage(LANG_HOVER_DISABLED, GetNameLink(target).c_str(), args);
 
-    PSendSysMessage(LANG_YOU_SET_WATERWALK, args, GetNameLink(player).c_str());
-    if (needReportToTarget(player))
-        ChatHandler(player).PSendSysMessage(LANG_YOUR_WATERWALK_SET, args, GetNameLink().c_str());
     return true;
 }
 

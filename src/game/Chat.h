@@ -547,6 +547,8 @@ class MANGOS_DLL_SPEC ChatHandler
         bool HandleLinkGraveCommand(char* args);
         bool HandleNearGraveCommand(char* args);
         bool HandleExploreCheatCommand(char* args);
+        bool HandleWaterwalkCommand(char* args);
+        bool HandleHoverCommand(char* args);
         bool HandleLevelUpCommand(char* args);
         bool HandleShowAreaCommand(char* args);
         bool HandleHideAreaCommand(char* args);
@@ -567,7 +569,6 @@ class MANGOS_DLL_SPEC ChatHandler
         bool HandleFlushArenaPointsCommand(char* args);
         bool HandleRepairitemsCommand(char* args);
         bool HandleStableCommand(char* args);
-        bool HandleWaterwalkCommand(char* args);
         bool HandleQuitCommand(char* args);
 
         bool HandleMmapPathCommand(char* args);
