@@ -1,0 +1,4 @@
+-- New .hover on/off command
+INSERT INTO `command` (`name`, `security`, `help`) VALUES ('hover', '2', 'Syntax: .hover on/off\r\n\r\nSet on/off hover state for selected player.');
+INSERT INTO `mangos_string` (`entry`, `content_default`) VALUES ('555', 'Hover enabled');
+INSERT INTO `mangos_string` (`entry`, `content_default`) VALUES ('556', 'Hover disabled');
