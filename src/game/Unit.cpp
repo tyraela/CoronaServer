@@ -9884,13 +9884,13 @@ void Unit::SetWalk(bool enable, bool asDefault)
 
 void Unit::SetHover(bool enable)
 {
-    if (enable == m_movementInfo.HasMovementFlag(MOVEFLAG_LEVITATING))
+    if (enable == m_movementInfo.HasMovementFlag(MOVEFLAG_HOVER))
         return;
 
     if (enable)
-        m_movementInfo.AddMovementFlag(MOVEFLAG_LEVITATING);
+        m_movementInfo.AddMovementFlag(MOVEFLAG_HOVER);
     else
-        m_movementInfo.RemoveMovementFlag(MOVEFLAG_LEVITATING);
+        m_movementInfo.RemoveMovementFlag(MOVEFLAG_HOVER);
 
     WorldPacket data(enable ? SMSG_SPLINE_MOVE_SET_HOVER : SMSG_SPLINE_MOVE_UNSET_HOVER, 12);
     data << GetPackGUID();
