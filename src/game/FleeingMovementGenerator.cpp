@@ -101,14 +101,23 @@ bool FleeingMovementGenerator<T>::_getPoint(T& owner, float& x, float& y, float&
     float curr_x, curr_y, curr_z;
     owner.GetPosition(curr_x, curr_y, curr_z);
 
-    x = curr_x + dist * cos(angle);
-    y = curr_y + dist * sin(angle);
-    z = curr_z;
-
-    if (owner.GetTypeId() == TYPEID_PLAYER)
-        owner.GetMap()->GetHitPosition(curr_x, curr_y, curr_z, x, y, z, -0.1f);
-
-    owner.UpdateAllowedPositionZ(x, y, z);
+    WorldLocation destLoc;
+    destLoc.coord_x = curr_x + dist*cos(angle);
+    destLoc.coord_y = curr_y + dist*sin(angle);
+    destLoc.coord_z = curr_z;
+    owner.MovePositionToFirstCollision(destLoc, owner.GetObjectScale(), owner.GetOrientation());
+    if (fabs(owner.GetMap()->GetTerrain()->GetHeightStatic(destLoc.coord_x, destLoc.coord_y, destLoc.coord_z, true) - owner.GetPositionZ()) > 2.0f)
+    {
+        x = curr_x;
+        y = curr_y;
+        z = curr_z;
+    }
+    else
+    {
+        x = destLoc.coord_x;
+        y = destLoc.coord_y;
+        z = destLoc.coord_z + owner.GetObjectScale();
+    }
 
     return true;
 }
