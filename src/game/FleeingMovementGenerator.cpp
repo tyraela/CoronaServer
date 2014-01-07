@@ -105,7 +105,10 @@ bool FleeingMovementGenerator<T>::_getPoint(T& owner, float& x, float& y, float&
     destLoc.coord_x = curr_x + dist*cos(angle);
     destLoc.coord_y = curr_y + dist*sin(angle);
     destLoc.coord_z = curr_z;
-    owner.MovePositionToFirstCollision(destLoc, owner.GetObjectScale(), owner.GetOrientation());
+
+    if (owner.GetTypeId() == TYPEID_PLAYER)
+        owner.MovePositionToFirstCollision(destLoc, owner.GetObjectScale(), owner.GetOrientation());
+
     if (fabs(owner.GetMap()->GetTerrain()->GetHeightStatic(destLoc.coord_x, destLoc.coord_y, destLoc.coord_z, true) - owner.GetPositionZ()) > 2.0f)
     {
         x = curr_x;

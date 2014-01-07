@@ -1302,41 +1302,64 @@ void WorldObject::UpdateAllowedPositionZ(float x, float y, float& z) const
 
 void WorldObject::MovePositionToFirstCollision(WorldLocation &pos, float dist, float angle)
 {
-    angle += m_position.o;
-    float destX, destY, destZ, ground, floor;
+    angle += GetOrientation();
+    float destx, desty, destz, ground, floor;
+    pos.coord_z += 2.0f;
+    destx = pos.coord_x + dist * std::cos(angle);
+    desty = pos.coord_y + dist * std::sin(angle);
 
-    destX = pos.coord_x + dist * cos(angle);
-    destY = pos.coord_y + dist * sin(angle);
-    ground = GetMap()->GetTerrain()->GetHeightStatic(destX, destY, MAX_HEIGHT, true);
-    floor = GetMap()->GetTerrain()->GetHeightStatic(destX, destY, pos.coord_z, true);
-    destZ = fabs(ground - pos.coord_z) <= fabs(floor - pos.coord_z) ? ground : floor;
+    // Prevent invalid coordinates here, position is unchanged
+    if (!MaNGOS::IsValidMapCoord(destx, desty))
+    {
+        sLog.outError("WorldObject::MovePositionToFirstCollision invalid coordinates X: %f and Y: %f were passed!", destx, desty);
+        return;
+    }
 
-    bool colPoint = GetMap()->GetHitPosition(pos.coord_x, pos.coord_y, pos.coord_z + 0.5f, destX, destY, destZ, + 0.5f);
+    ground = GetMap()->GetTerrain()->GetHeightStatic(destx, desty, MAX_HEIGHT, true);
+    floor = GetMap()->GetTerrain()->GetHeightStatic(destx, desty, pos.coord_z, true);
+    destz = fabs(ground - pos.coord_z) <= fabs(floor - pos.coord_z) ? ground : floor;
 
+    bool colPoint = VMAP::VMapFactory::createOrGetVMapManager()->getObjectHitPos(GetMapId(), pos.coord_x, pos.coord_y, pos.coord_z + 0.5f, destx, desty, destz + 0.5f, destx, desty, destz, -0.5f);
+
+    // collision occured
     if (colPoint)
     {
-        destX -= CONTACT_DISTANCE * cos(angle);
-        destY -= CONTACT_DISTANCE * sin(angle);
-        dist = sqrt((pos.coord_x - destX)*(pos.coord_x - destX) + (pos.coord_y - destY)*(pos.coord_y - destY));
+        // move back a bit
+        destx -= CONTACT_DISTANCE * std::cos(angle);
+        desty -= CONTACT_DISTANCE * std::sin(angle);
+        dist = sqrt((pos.coord_x - destx)*(pos.coord_x - destx) + (pos.coord_y - desty)*(pos.coord_y - desty));
+    }
+
+    // check dynamic collision
+    colPoint = GetMap()->GetHitPosition(pos.coord_x, pos.coord_y, pos.coord_z + 0.5f, destx, desty, destz, -0.5f);
+
+    // Collided with a gameobject
+    if (colPoint)
+    {
+        destx -= CONTACT_DISTANCE * std::cos(angle);
+        desty -= CONTACT_DISTANCE * std::sin(angle);
+        dist = sqrt((pos.coord_x - destx)*(pos.coord_x - destx) + (pos.coord_y - desty)*(pos.coord_y - desty));
     }
 
     float step = dist/10.0f;
 
     for (int i = 0; i < 10; i++)
     {
-        if (fabs(pos.coord_z - destZ) > ATTACK_DISTANCE)
+        // do not allow too big z changes
+        if (fabs(pos.coord_z - destz) > ATTACK_DISTANCE)
         {
-            destX -= step * cos(angle);
-            destY -= step * sin(angle);
-            ground = GetMap()->GetTerrain()->GetHeightStatic(destX, destY, MAX_HEIGHT, true);
-            floor = GetMap()->GetTerrain()->GetHeightStatic(destX, destY, pos.coord_z, true);
-            destZ = fabs(ground - pos.coord_z) <= fabs(floor - pos.coord_z) ? ground : floor;
+            destx -= step * std::cos(angle);
+            desty -= step * std::sin(angle);
+            ground = GetMap()->GetTerrain()->GetHeightStatic(destx, desty, MAX_HEIGHT, true);
+            floor = GetMap()->GetTerrain()->GetHeightStatic(destx, desty, pos.coord_z, true);
+            destz = fabs(ground - pos.coord_z) <= fabs(floor - pos.coord_z) ? ground : floor;
         }
+        // we have correct destz now
         else
         {
-            pos.coord_x = destX;
-            pos.coord_y = destY;
-            pos.coord_z = destZ;
+            pos.coord_x = destx;
+            pos.coord_y = desty;
+            pos.coord_z = destz;
             break;
         }
     }
