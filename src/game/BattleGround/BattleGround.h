@@ -106,7 +106,8 @@ enum BattleGroundTimeIntervals
     RESPAWN_ONE_DAY                 = 86400,                // secs
     RESPAWN_IMMEDIATELY             = 0,                    // secs
     BUFF_RESPAWN_TIME               = 180,                  // secs
-    ARENA_SPAWN_BUFF_OBJECTS        = 90000,                // ms - 90sec after start
+    ARENA_BUFF_SPAWN_TIME           = 90000,                // ms - 90sec after start
+    ARENA_BUFF_RESPAWN_TIME         = 90                    // secs
 };
 
 enum BattleGroundStartTimeIntervals
