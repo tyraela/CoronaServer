@@ -383,7 +383,7 @@ void BattleGround::Update(uint32 diff)
     if (isArena() && !m_ArenaBuffSpawned)
     {
         // 60 seconds after start the buffobjects in arena should get spawned
-        if (m_StartTime > uint32(m_StartDelayTimes[BG_STARTING_EVENT_FIRST] + ARENA_SPAWN_BUFF_OBJECTS))
+        if (m_StartTime > uint32(m_StartDelayTimes[BG_STARTING_EVENT_FIRST] + ARENA_BUFF_SPAWN_TIME))
         {
             SpawnEvent(ARENA_BUFF_EVENT, 0, true);
             m_ArenaBuffSpawned = true;
@@ -1569,8 +1569,14 @@ void BattleGround::HandleTriggerBuff(ObjectGuid go_guid)
     if (!obj || obj->GetGoType() != GAMEOBJECT_TYPE_TRAP || !obj->isSpawned())
         return;
 
-    obj->SetLootState(GO_JUST_DEACTIVATED);             // can be despawned or destroyed
-    return;
+    if(GetBgMap()->IsBattleArena())
+    {
+        SpawnBGObject(go_guid, ARENA_BUFF_RESPAWN_TIME);
+    }
+    else
+    {
+        SpawnBGObject(go_guid, BUFF_RESPAWN_TIME);
+    }
 }
 
 void BattleGround::HandleKillPlayer(Player* player, Player* killer)
