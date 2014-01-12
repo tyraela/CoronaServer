@@ -5270,6 +5270,10 @@ bool Unit::Attack(Unit* victim, bool meleeAttack)
     if (GetTypeId() == TYPEID_PLAYER && IsMounted())
         return false;
 
+    // Units cannot attack when polymorphed or feared
+    if (HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_CONFUSED) || HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_FLEEING))
+        return false;
+
     // nobody can attack GM in GM-mode
     if (victim->GetTypeId() == TYPEID_PLAYER)
     {
@@ -7818,7 +7822,7 @@ bool Unit::SelectHostileTarget()
 
     if (target)
     {
-        if (!hasUnitState(UNIT_STAT_STUNNED | UNIT_STAT_DIED))
+        if (!hasUnitState(UNIT_STAT_STUNNED | UNIT_STAT_DIED) && !HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_CONFUSED) && !HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_FLEEING))
         {
             SetInFront(target);
             if (oldTarget != target)
