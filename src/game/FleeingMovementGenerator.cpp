@@ -38,18 +38,23 @@ void FleeingMovementGenerator<T>::_setTargetLocation(T& owner)
     if (owner.hasUnitState((UNIT_STAT_CAN_NOT_REACT | UNIT_STAT_NOT_MOVE) & ~UNIT_STAT_FLEEING))
         return;
 
-    float x, y, z;
-    if (!_getPoint(owner, x, y, z))
-        return;
-
     owner.addUnitState(UNIT_STAT_FLEEING_MOVE);
+
+    float x, y, z;
+    _getPoint(owner, x, y, z);
+
+    if (!owner.IsWithinLOS(x, y, z))
+    {
+        i_nextCheckTime.Reset(200);
+        return;
+    }
 
     PathFinder path(&owner);
     path.setPathLengthLimit(30.0f);
-    path.calculate(x, y, z);
-    if (path.getPathType() & PATHFIND_NOPATH)
+    bool result = path.calculate(x, y, z);
+    if (!result || (path.getPathType() & PATHFIND_NOPATH))
     {
-        i_nextCheckTime.Reset(urand(1000, 1500));
+        i_nextCheckTime.Reset(100);
         return;
     }
 
@@ -99,9 +104,8 @@ bool FleeingMovementGenerator<T>::_getPoint(T& owner, float& x, float& y, float&
     }
 
     WorldLocation destLoc;
-
-    if (owner.GetTypeId() == TYPEID_PLAYER)
-        owner.GetFirstCollisionPosition(destLoc, dist, angle);
+    
+    owner.GetFirstCollisionPosition(destLoc, dist, angle);
 
     x = destLoc.coord_x;
     y = destLoc.coord_y;
