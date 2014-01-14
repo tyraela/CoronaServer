@@ -389,11 +389,11 @@ namespace LuaPlayer
         return 1;
     }
 
-    /*int IsImmuneToEnvironmentalDamage(lua_State* L, Player* player)
+    int IsImmuneToEnvironmentalDamage(lua_State* L, Player* player)
     {
         sEluna.Push(L, player->IsImmuneToEnvironmentalDamage());
         return 1;
-    }*/
+    }
 
     int IsRested(lua_State* L, Player* player)
     {
