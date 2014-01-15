@@ -688,6 +688,9 @@ void WorldSession::HandleAreaTriggerOpcode(WorldPacket& recv_data)
     DEBUG_LOG("Trigger ID: %u", Trigger_ID);
     Player* player = GetPlayer();
 
+    if (GetPlayer()->isGameMaster())
+        SendAreaTriggerMessage("Entered %u areatrigger.", Trigger_ID);
+
     if (player->IsTaxiFlying())
     {
         DEBUG_LOG("Player '%s' (GUID: %u) in flight, ignore Area Trigger ID: %u", player->GetName(), player->GetGUIDLow(), Trigger_ID);
