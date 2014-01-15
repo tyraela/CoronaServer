@@ -474,6 +474,7 @@ Player::Player(WorldSession* session): Unit(), m_mover(this), m_camera(this), m_
     m_restTime = 0;
     m_deathTimer = 0;
     m_deathExpireTime = 0;
+    m_liquidJump = false;
 
     m_swingErrorMsg = 0;
 
@@ -1073,8 +1074,10 @@ void Player::HandleDrowning(uint32 time_diff)
             }
         }
     }
-    else
+    else if(!m_liquidJump)
+    {
         m_MirrorTimer[FIRE_TIMER] = DISABLED_MIRROR_TIMER;
+    }
 
     // Recheck timers flag
     m_MirrorTimerFlags &= ~UNDERWATER_EXIST_TIMERS;

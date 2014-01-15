@@ -2401,6 +2401,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         uint8 m_MirrorTimerFlags;
         uint8 m_MirrorTimerFlagsLast;
         bool m_isInWater;
+        bool m_liquidJump;
 
         // Current teleport data
         WorldLocation m_teleport_dest;

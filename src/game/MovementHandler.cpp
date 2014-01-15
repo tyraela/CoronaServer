@@ -271,6 +271,13 @@ void WorldSession::HandleMovementOpcodes(WorldPacket& recv_data)
     if (opcode == MSG_MOVE_FALL_LAND && plMover && !plMover->IsTaxiFlying())
         plMover->HandleFall(movementInfo);
 
+    // jumping in liquid
+    if (opcode == MSG_MOVE_JUMP && plMover && plMover->IsInWater() && !plMover->m_liquidJump)                   // start jumping
+        plMover->m_liquidJump = true;
+
+    if ((opcode == MSG_MOVE_START_SWIM || opcode == MSG_MOVE_FALL_LAND) && plMover && plMover->m_liquidJump)     // end jumping
+        plMover->m_liquidJump = false;
+
     /* process position-change */
     HandleMoverRelocation(movementInfo);
 
@@ -278,8 +285,8 @@ void WorldSession::HandleMovementOpcodes(WorldPacket& recv_data)
         plMover->UpdateFallInformationIfNeed(movementInfo, opcode);
 
     WorldPacket data(opcode, recv_data.size());
-    data << mover->GetPackGUID();             // write guid
-    movementInfo.Write(data);                               // write data
+    data << mover->GetPackGUID();
+    movementInfo.Write(data);
     mover->SendMessageToSetExcept(&data, _player);
 }
 
