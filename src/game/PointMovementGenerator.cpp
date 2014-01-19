@@ -149,8 +149,9 @@ void FlyOrLandMovementGenerator::Initialize(Unit& unit)
 {
     if (unit.hasUnitState(UNIT_STAT_CAN_NOT_REACT | UNIT_STAT_NOT_MOVE))
         return;
-
-    unit.StopMoving();
+    
+    if (!unit.IsStopped())
+        unit.StopMoving();
 
     float x, y, z;
     GetDestination(x, y, z);
