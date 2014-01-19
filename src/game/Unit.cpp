@@ -7361,10 +7361,7 @@ bool Unit::canDetectInvisibilityOf(Unit const* u) const
 }
 
 void Unit::UpdateSpeed(UnitMoveType mtype, bool forced, float ratio)
-{
-    //if (isFeared())
-    //    return;
-    
+{  
     // not in combat pet have same speed as owner
     switch (mtype)
     {
