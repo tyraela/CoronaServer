@@ -9893,6 +9893,22 @@ void Unit::SetWalk(bool enable, bool asDefault)
     SendMessageToSet(&data, true);
 }
 
+void Unit::SetLevitate(bool enable)
+{
+    if (enable == m_movementInfo.HasMovementFlag(MOVEFLAG_LEVITATING))
+        return;
+
+    if (enable)
+        m_movementInfo.AddMovementFlag(MOVEFLAG_LEVITATING);
+    else
+        m_movementInfo.RemoveMovementFlag(MOVEFLAG_LEVITATING);
+
+    // TODO: there should be analogic opcode for 2.43
+    // WorldPacket data(enable ? SMSG_SPLINE_MOVE_GRAVITY_DISABLE : SMSG_SPLINE_MOVE_GRAVITY_ENABLE, 9);
+    // data << GetPackGUID();
+    // SendMessageToSet(&data, true);
+}
+
 void Unit::SetHover(bool enable)
 {
     if (enable == m_movementInfo.HasMovementFlag(MOVEFLAG_HOVER))
@@ -9902,6 +9918,7 @@ void Unit::SetHover(bool enable)
         m_movementInfo.AddMovementFlag(MOVEFLAG_HOVER);
     else
         m_movementInfo.RemoveMovementFlag(MOVEFLAG_HOVER);
+
 
     WorldPacket data(enable ? SMSG_SPLINE_MOVE_SET_HOVER : SMSG_SPLINE_MOVE_UNSET_HOVER, 12);
     data << GetPackGUID();
@@ -9920,22 +9937,6 @@ void Unit::SetSwim(bool enable)
 
 
     WorldPacket data(enable ? SMSG_SPLINE_MOVE_START_SWIM : SMSG_SPLINE_MOVE_STOP_SWIM, 9);
-    data << GetPackGUID();
-    SendMessageToSet(&data, true);
-}
-
-void Unit::SetCanFly(bool enable)
-{
-    if (enable == m_movementInfo.HasMovementFlag(MOVEFLAG_CAN_FLY))
-        return;
-
-    if (enable)
-        m_movementInfo.AddMovementFlag(MOVEFLAG_CAN_FLY);
-    else
-        m_movementInfo.RemoveMovementFlag(MOVEFLAG_CAN_FLY);
-
-
-    WorldPacket data(enable ? SMSG_MOVE_SET_CAN_FLY : SMSG_MOVE_UNSET_CAN_FLY, 12);
     data << GetPackGUID();
     SendMessageToSet(&data, true);
 }

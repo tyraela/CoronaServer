@@ -618,16 +618,24 @@ enum MovementFlags
     MOVEFLAG_SPLINE_ENABLED     = 0x08000000,               // used for flight paths
     MOVEFLAG_WATERWALKING       = 0x10000000,               // prevent unit from falling through water
     MOVEFLAG_SAFE_FALL          = 0x20000000,               // active rogue safe fall spell (passive)
-    MOVEFLAG_HOVER              = 0x40000000
+    MOVEFLAG_HOVER              = 0x40000000,               // hover, cannot jump
+
+    MOVEFLAG_MASK_MOVING =
+        MOVEFLAG_FORWARD | MOVEFLAG_BACKWARD | MOVEFLAG_STRAFE_LEFT | MOVEFLAG_STRAFE_RIGHT |
+        MOVEFLAG_PITCH_UP | MOVEFLAG_PITCH_DOWN | MOVEFLAG_FALLING | MOVEFLAG_FALLINGFAR | MOVEFLAG_ASCENDING |
+        MOVEFLAG_SPLINE_ELEVATION,
+
+    MOVEFLAG_TURNING =
+        MOVEFLAG_TURN_LEFT | MOVEFLAG_TURN_RIGHT,
 };
 
 // flags that use in movement check for example at spell casting
 MovementFlags const movementFlagsMask = MovementFlags(
-        MOVEFLAG_FORWARD | MOVEFLAG_BACKWARD  | MOVEFLAG_STRAFE_LEFT | MOVEFLAG_STRAFE_RIGHT |
-        MOVEFLAG_PITCH_UP | MOVEFLAG_PITCH_DOWN | MOVEFLAG_ROOT        |
-        MOVEFLAG_FALLING | MOVEFLAG_FALLINGFAR | MOVEFLAG_ASCENDING   |
-        MOVEFLAG_FLYING  | MOVEFLAG_SPLINE_ELEVATION
-                                        );
+            MOVEFLAG_FORWARD | MOVEFLAG_BACKWARD | MOVEFLAG_STRAFE_LEFT | MOVEFLAG_STRAFE_RIGHT |
+            MOVEFLAG_PITCH_UP | MOVEFLAG_PITCH_DOWN | MOVEFLAG_ROOT |
+            MOVEFLAG_FALLING | MOVEFLAG_FALLINGFAR | MOVEFLAG_ASCENDING |
+            MOVEFLAG_FLYING | MOVEFLAG_SPLINE_ELEVATION
+        );
 
 MovementFlags const movementOrTurningFlagsMask = MovementFlags(
             movementFlagsMask | MOVEFLAG_TURN_LEFT | MOVEFLAG_TURN_RIGHT
@@ -1520,18 +1528,17 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
 
         bool IsWalking() const { return m_movementInfo.HasMovementFlag(MOVEFLAG_WALK_MODE); }
         bool IsHovering() const { return m_movementInfo.HasMovementFlag(MOVEFLAG_HOVER); }
-        bool IsLevitating() const { return IsHovering(); } // Alias function since we miss Optcode for Levitate in 2.4.3
+        bool IsLevitating() const { return m_movementInfo.HasMovementFlag(MOVEFLAG_LEVITATING); }
         bool IsSwimming() const { return m_movementInfo.HasMovementFlag(MOVEFLAG_SWIMMING); }
-        bool IsFlying() const { return m_movementInfo.HasMovementFlag(MOVEFLAG_CAN_FLY); }
+        bool IsFlying() const { return m_movementInfo.HasMovementFlag(MOVEFLAG_FLYING); }
         bool IsWaterWalking() const { return m_movementInfo.HasMovementFlag(MOVEFLAG_WATERWALKING); }
         bool IsSafeFalling() const { return m_movementInfo.HasMovementFlag(MOVEFLAG_SAFE_FALL); }
         bool IsRooted() const { return m_movementInfo.HasMovementFlag(MOVEFLAG_ROOT); }
 
         virtual void SetWalk(bool enable, bool asDefault = false);
         void SetHover(bool enable);
-        void SetLevitate(bool enable){ SetHover(enable); } // Alias function since we miss Optcode for Levitate in 2.4.3
+        void SetLevitate(bool enable);
         void SetSwim(bool enable);
-        void SetCanFly(bool enable);
         void SetWaterWalk(bool enable);
         void SetSafeFall(bool enable);
         void SetRoot(bool enable);
@@ -1917,8 +1924,6 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         float GetSpeed(UnitMoveType mtype) const;
         float GetSpeedRate(UnitMoveType mtype) const { return m_speed_rate[mtype]; }
         void SetSpeedRate(UnitMoveType mtype, float rate, bool forced = false);
-
-        bool isHover() const { return HasAuraType(SPELL_AURA_HOVER); }
 
         void _RemoveAllAuraMods();
         void _ApplyAllAuraMods();

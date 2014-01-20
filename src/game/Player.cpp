@@ -20880,6 +20880,22 @@ void Player::KnockBackFrom(Unit* target, float horizontalSpeed, float verticalSp
     GetSession()->SendKnockBack(angle, horizontalSpeed, verticalSpeed);
 }
 
+void Player::SetCanFly(bool enable)
+{
+    if (enable == m_movementInfo.HasMovementFlag(MOVEFLAG_CAN_FLY))
+        return;
+
+    if (enable)
+        m_movementInfo.AddMovementFlag(MOVEFLAG_CAN_FLY);
+    else
+        m_movementInfo.RemoveMovementFlag(MOVEFLAG_CAN_FLY);
+
+
+    WorldPacket data(enable ? SMSG_MOVE_SET_CAN_FLY : SMSG_MOVE_UNSET_CAN_FLY, 12);
+    data << GetPackGUID();
+    SendMessageToSet(&data, true);
+}
+
 AreaLockStatus Player::GetAreaTriggerLockStatus(AreaTrigger const* at, uint32& miscRequirement)
 {
     miscRequirement = 0;
