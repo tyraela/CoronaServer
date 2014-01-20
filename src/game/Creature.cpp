@@ -731,9 +731,6 @@ bool Creature::Create(uint32 guidlow, CreatureCreatePos& cPos, CreatureInfo cons
     if (!CreateFromProto(guidlow, cinfo, team, data, eventData))
         return false;
 
-    if (IsLevitating())
-        //cPos.m_pos.z += 3.0f;
-
     cPos.SelectFinalPoint(this);
 
     if (!cPos.Relocate(this))
@@ -2192,9 +2189,6 @@ void Creature::GetRespawnCoord(float& x, float& y, float& z, float* ori, float* 
 
     if (dist)
         *dist = GetRespawnRadius();
-    
-    if (IsLevitating())
-        z += 4.0f;
 
     // lets check if our creatures have valid spawn coordinates
     MANGOS_ASSERT(MaNGOS::IsValidMapCoord(x, y, z) || PrintCoordinatesError(x, y, z, "respawn"));
