@@ -267,6 +267,14 @@ struct PointOfInterestLocale
     std::vector<std::string> IconName;
 };
 
+/*
+1 = ground
+2 = water
+3 = ground,water
+4 = air
+5 = ground,air
+7 = ground,water,air
+*/
 enum InhabitTypeValues
 {
     INHABIT_GROUND = 1,
