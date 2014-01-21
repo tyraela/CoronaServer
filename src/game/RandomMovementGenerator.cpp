@@ -34,8 +34,6 @@ RandomMovementGenerator<Creature>::RandomMovementGenerator(const Creature& creat
     i_y = respY;
     i_z = respZ;
     i_radius = wander_distance;
-    // TODO - add support for flying mobs using some distance
-    i_verticalZ = 0.0f;
 }
 
 template<>
@@ -43,23 +41,37 @@ void RandomMovementGenerator<Creature>::_setRandomLocation(Creature& creature)
 {
     const float angle = rand_norm_f() * (M_PI_F * 2.0f);
     const float range = rand_norm_f() * i_radius;
-
-    float destX = i_x + range * cos(angle);
-    float destY = i_y + range * sin(angle);
-    float destZ = i_z + frand(-1, 1) * i_verticalZ;
+    
+    float destX, destY, destZ;
+    creature.GetNearPoint(&creature, destX, destY, destZ, creature.GetObjectBoundingRadius(), range, angle);
     creature.UpdateAllowedPositionZ(destX, destY, destZ);
+
+    float dx = i_x - destX;
+    float dy = i_y - destY;
+    if (sqrt((dx*dx) + (dy*dy)) > i_radius)
+    {
+        destX = i_x;
+        destY = i_y;
+        destZ = i_z;
+    }
+    else if (creature.IsLevitating())
+        destZ = i_z;
 
     creature.addUnitState(UNIT_STAT_ROAMING_MOVE);
 
     Movement::MoveSplineInit init(creature);
     init.MoveTo(destX, destY, destZ, true);
-    init.SetWalk(true);
+
+    if (!creature.IsLevitating() && !creature.IsSwimming())
+        init.SetWalk(true);
+
     init.Launch();
 
     if (creature.CanFly())
         i_nextMoveTime.Reset(0);
     else
         i_nextMoveTime.Reset(urand(500, 10000));
+    
 }
 
 template<>
