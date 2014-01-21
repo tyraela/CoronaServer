@@ -1941,9 +1941,6 @@ bool Creature::LoadCreatureAddon(bool reload)
 
     if (cainfo->emote != 0)
         SetUInt32Value(UNIT_NPC_EMOTESTATE, cainfo->emote);
-    
-    if (cainfo->move_flags & MOVEFLAG_LEVITATING)
-        SetLevitate(true);
 
     if (cainfo->auras)
     {
