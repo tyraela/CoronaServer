@@ -321,7 +321,8 @@ bool Creature::InitEntry(uint32 Entry, CreatureData const* data /*=NULL*/, GameE
     UpdateSpeed(MOVE_WALK, false);
     UpdateSpeed(MOVE_RUN,  false);
 
-    SetLevitate(cinfo->InhabitType & INHABIT_AIR);
+    SetLevitate(cinfo->InhabitType == INHABIT_AIR);
+    SetHover((cinfo->InhabitType & INHABIT_AIR && cinfo->InhabitType & INHABIT_AIR));
 
     // checked at loading
     m_defaultMovementType = MovementGeneratorType(cinfo->MovementType);
