@@ -217,6 +217,7 @@ class MANGOS_DLL_SPEC ChatHandler
         bool HandleDebugSpellCheckCommand(char* args);
         bool HandleDebugSpellCoefsCommand(char* args);
         bool HandleDebugSpellModsCommand(char* args);
+        bool HandleDebugMoveflagsCommand(char* args);
         bool HandleDebugUpdateWorldStateCommand(char* args);
 
         bool HandleDebugPlayCinematicCommand(char* args);

@@ -942,7 +942,9 @@ enum MangosStrings
     //                                    1193 used in master branch
     LANG_COMMAND_GO_STATUS              = 1194,
     LANG_COMMAND_GO_STATUS_DOOR         = 1195,
-    // Room for more level 3              1196-1199 not used
+    LANG_GET_MOVEFLAGS                  = 1196,
+    LANG_SET_MOVEFLAGS                  = 1197,
+    // Room for more level 3              1198-1199 not used
 
     // Debug commands
     LANG_CINEMATIC_NOT_EXIST            = 1200,

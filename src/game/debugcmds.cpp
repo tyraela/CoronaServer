@@ -1110,3 +1110,34 @@ bool ChatHandler::HandleDebugSpellModsCommand(char* args)
 
     return true;
 }
+
+bool ChatHandler::HandleDebugMoveflagsCommand(char* args)
+{
+    Unit* target = getSelectedUnit();
+    if (!target)
+    {
+        SendSysMessage(LANG_SELECT_CHAR_OR_CREATURE);
+        SetSentErrorMessage(true);
+        return false;
+    }
+
+    if (!*args)
+    {
+        PSendSysMessage(LANG_GET_MOVEFLAGS, target->m_movementInfo.GetMovementFlags());
+    }
+    else
+    {        
+        char* mask = ExtractLiteralArg(&args);
+        if (!mask)
+            return false;
+
+        MovementFlags newFlags = static_cast<MovementFlags>(strtol(mask, NULL, 16));
+        
+        target->m_movementInfo.SetMovementFlags(newFlags);
+        target->SendHeartBeat();
+
+        PSendSysMessage(LANG_SET_MOVEFLAGS, target->m_movementInfo.GetMovementFlags());
+    }
+
+    return true;
+}
