@@ -147,9 +147,9 @@ enum UnitStandStateType
     UNIT_STAND_STATE_SIT_LOW_CHAIR     = 4,
     UNIT_STAND_STATE_SIT_MEDIUM_CHAIR  = 5,
     UNIT_STAND_STATE_SIT_HIGH_CHAIR    = 6,
-    UNIT_STAND_STATE_DEAD              = 7,
+    UNIT_STAND_STATE_DEAD              = 7,                 // (BUG:health bar is not empty)
     UNIT_STAND_STATE_KNEEL             = 8,
-    UNIT_STAND_STATE_CUSTOM            = 9                  // Depends on model animation. Submerge, freeze, hide, hibernate, rest
+    UNIT_STAND_STATE_CUSTOM            = 9                  // Depends on model animation. Submerge, freeze, hide, hibernate, rest (BUG:agro range, merge/submerge animation)
 };
 
 #define MAX_UNIT_STAND_STATE             10
@@ -594,52 +594,55 @@ enum NPCFlags
 // used in most movement packets (send and received)
 enum MovementFlags
 {
-    MOVEFLAG_NONE               = 0x00000000,
-    MOVEFLAG_FORWARD            = 0x00000001,
-    MOVEFLAG_BACKWARD           = 0x00000002,
-    MOVEFLAG_STRAFE_LEFT        = 0x00000004,
-    MOVEFLAG_STRAFE_RIGHT       = 0x00000008,
-    MOVEFLAG_TURN_LEFT          = 0x00000010,
-    MOVEFLAG_TURN_RIGHT         = 0x00000020,
-    MOVEFLAG_PITCH_UP           = 0x00000040,
-    MOVEFLAG_PITCH_DOWN         = 0x00000080,
-    MOVEFLAG_WALK_MODE          = 0x00000100,               // Walking
-    MOVEFLAG_ONTRANSPORT        = 0x00000200,               // Used for flying on some creatures
-    MOVEFLAG_LEVITATING         = 0x00000400,
-    MOVEFLAG_ROOT               = 0x00000800,
-    MOVEFLAG_FALLING            = 0x00001000,
-    MOVEFLAG_FALLINGFAR         = 0x00004000,
-    MOVEFLAG_SWIMMING           = 0x00200000,               // appears with fly flag also
-    MOVEFLAG_ASCENDING          = 0x00400000,               // swim up also
-    MOVEFLAG_CAN_FLY            = 0x00800000,
-    MOVEFLAG_FLYING             = 0x01000000,
-    MOVEFLAG_FLYING2            = 0x02000000,               // Actual flying mode
-    MOVEFLAG_SPLINE_ELEVATION   = 0x04000000,               // used for flight paths
-    MOVEFLAG_SPLINE_ENABLED     = 0x08000000,               // used for flight paths
-    MOVEFLAG_WATERWALKING       = 0x10000000,               // prevent unit from falling through water
-    MOVEFLAG_SAFE_FALL          = 0x20000000,               // active rogue safe fall spell (passive)
-    MOVEFLAG_HOVER              = 0x40000000,               // hover, cannot jump
-
-    MOVEFLAG_MASK_MOVING =
-        MOVEFLAG_FORWARD | MOVEFLAG_BACKWARD | MOVEFLAG_STRAFE_LEFT | MOVEFLAG_STRAFE_RIGHT |
-        MOVEFLAG_PITCH_UP | MOVEFLAG_PITCH_DOWN | MOVEFLAG_FALLING | MOVEFLAG_FALLINGFAR | MOVEFLAG_ASCENDING |
-        MOVEFLAG_SPLINE_ELEVATION,
-
-    MOVEFLAG_TURNING =
-        MOVEFLAG_TURN_LEFT | MOVEFLAG_TURN_RIGHT,
+    MOVEFLAG_NONE                   = 0x00000000,
+    MOVEFLAG_FORWARD                = 0x00000001,
+    MOVEFLAG_BACKWARD               = 0x00000002,
+    MOVEFLAG_STRAFE_LEFT            = 0x00000004,
+    MOVEFLAG_STRAFE_RIGHT           = 0x00000008,
+    MOVEFLAG_TURN_LEFT              = 0x00000010,
+    MOVEFLAG_TURN_RIGHT             = 0x00000020,
+    MOVEFLAG_PITCH_UP               = 0x00000040,
+    MOVEFLAG_PITCH_DOWN             = 0x00000080,
+    MOVEFLAG_WALK_MODE              = 0x00000100,
+    MOVEFLAG_ONTRANSPORT            = 0x00000200,
+    MOVEFLAG_LEVITATING             = 0x00000400,
+    MOVEFLAG_ROOT                   = 0x00000800,
+    MOVEFLAG_FALLING                = 0x00001000,
+    MOVEFLAG_FALLING_FAR            = 0x00002000,
+    MOVEFLAG_PENDING_STOP           = 0x00004000,   // untestested
+    MOVEFLAG_PENDING_STRAFE_STOP    = 0x00008000,   // untestested
+    MOVEFLAG_PENDING_FORWARD        = 0x00010000,   // untestested
+    MOVEFLAG_PENDING_BACKWARD       = 0x00020000,   // untestested
+    MOVEFLAG_PENDING_STRAFE_LEFT    = 0x00040000,   // untestested
+    MOVEFLAG_PENDING_STRAFE_RIGHT   = 0x00080000,   // untestested
+    MOVEFLAG_PENDING_ROOT           = 0x00100000,   // untestested
+    MOVEFLAG_SWIMMING               = 0x00200000,
+    MOVEFLAG_ASCENDING              = 0x00400000,
+    MOVEFLAG_DESCENDING             = 0x00800000,
+    MOVEFLAG_CAN_FLY                = 0x01000000,
+    MOVEFLAG_FLYING                 = 0x02000000,
+    MOVEFLAG_SPLINE_ELEVATION       = 0x04000000,   // untestested
+    MOVEFLAG_SPLINE_ENABLED         = 0x08000000,
+    MOVEFLAG_WATERWALKING           = 0x10000000,
+    MOVEFLAG_SAFE_FALL              = 0x20000000,
+    MOVEFLAG_HOVER                  = 0x40000000,
+    MOVEFLAG_LOCAL_CONTROL          = 0x80000000,   // untestested
 };
 
 // flags that use in movement check for example at spell casting
 MovementFlags const movementFlagsMask = MovementFlags(
-            MOVEFLAG_FORWARD | MOVEFLAG_BACKWARD | MOVEFLAG_STRAFE_LEFT | MOVEFLAG_STRAFE_RIGHT |
-            MOVEFLAG_PITCH_UP | MOVEFLAG_PITCH_DOWN | MOVEFLAG_ROOT |
-            MOVEFLAG_FALLING | MOVEFLAG_FALLINGFAR | MOVEFLAG_ASCENDING |
-            MOVEFLAG_FLYING | MOVEFLAG_SPLINE_ELEVATION
-        );
+    MOVEFLAG_FORWARD | MOVEFLAG_BACKWARD | MOVEFLAG_STRAFE_LEFT | MOVEFLAG_STRAFE_RIGHT |
+    MOVEFLAG_PITCH_UP | MOVEFLAG_PITCH_DOWN | MOVEFLAG_FALLING | MOVEFLAG_FALLING_FAR |
+    MOVEFLAG_ASCENDING | MOVEFLAG_DESCENDING | MOVEFLAG_SPLINE_ELEVATION
+);
+
+MovementFlags const turningFlagsMask = MovementFlags(
+    MOVEFLAG_TURN_LEFT | MOVEFLAG_TURN_RIGHT
+);
 
 MovementFlags const movementOrTurningFlagsMask = MovementFlags(
-            movementFlagsMask | MOVEFLAG_TURN_LEFT | MOVEFLAG_TURN_RIGHT
-        );
+    movementFlagsMask | turningFlagsMask
+);
 
 class MovementInfo
 {

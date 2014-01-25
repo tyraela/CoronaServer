@@ -91,14 +91,14 @@ void MovementInfo::Read(ByteBuffer& data)
         data >> t_time;
     }
 
-    if (HasMovementFlag(MovementFlags(MOVEFLAG_SWIMMING | MOVEFLAG_FLYING2)))
+    if (HasMovementFlag(MovementFlags(MOVEFLAG_SWIMMING | MOVEFLAG_FLYING)))
     {
         data >> s_pitch;
     }
 
     data >> fallTime;
 
-    if (HasMovementFlag(MOVEFLAG_FALLING))
+    if (HasMovementFlag(MOVEFLAG_FALLING_FAR))
     {
         data >> jump.velocity;
         data >> jump.sinAngle;
@@ -132,14 +132,14 @@ void MovementInfo::Write(ByteBuffer& data) const
         data << t_time;
     }
 
-    if (HasMovementFlag(MovementFlags(MOVEFLAG_SWIMMING | MOVEFLAG_FLYING2)))
+    if (HasMovementFlag(MovementFlags(MOVEFLAG_SWIMMING | MOVEFLAG_FLYING)))
     {
         data << s_pitch;
     }
 
     data << fallTime;
 
-    if (HasMovementFlag(MOVEFLAG_FALLING))
+    if (HasMovementFlag(MOVEFLAG_FALLING_FAR))
     {
         data << jump.velocity;
         data << jump.sinAngle;

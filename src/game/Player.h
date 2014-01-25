@@ -1996,6 +1996,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         void BuildTeleportAckMsg(WorldPacket& data, float x, float y, float z, float ang) const;
 
         bool isMoving() const { return m_movementInfo.HasMovementFlag(movementFlagsMask); }
+        bool isTurning() const { return m_movementInfo.HasMovementFlag(turningFlagsMask); }
         bool isMovingOrTurning() const { return m_movementInfo.HasMovementFlag(movementOrTurningFlagsMask); }
 
         bool CanFly() const { return m_movementInfo.HasMovementFlag(MOVEFLAG_CAN_FLY); }

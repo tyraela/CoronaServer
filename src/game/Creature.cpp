@@ -321,8 +321,9 @@ bool Creature::InitEntry(uint32 Entry, CreatureData const* data /*=NULL*/, GameE
     UpdateSpeed(MOVE_WALK, false);
     UpdateSpeed(MOVE_RUN,  false);
 
-    SetLevitate(cinfo->InhabitType == INHABIT_AIR);
-    SetHover((cinfo->InhabitType & INHABIT_AIR && cinfo->InhabitType & INHABIT_AIR));
+    // Lets air creatures fly
+    if(cinfo->InhabitType & INHABIT_AIR)
+        SetLevitate(true);
 
     // checked at loading
     m_defaultMovementType = MovementGeneratorType(cinfo->MovementType);
@@ -1927,22 +1928,29 @@ bool Creature::LoadCreatureAddon(bool reload)
         SetByteValue(UNIT_FIELD_BYTES_1, 3, uint8((cainfo->bytes1 >> 24) & 0xFF));
     }
 
-    // UNIT_FIELD_BYTES_2
-    // 0 SheathState
-    // 1 Bytes2Flags, in 3.x used UnitPVPStateFlags, that have different meaning
-    // 2 UnitRename         Pet only, so always 0 for default creature
-    // 3 ShapeshiftForm     Must be determined/set by shapeshift spell/aura
-    SetByteValue(UNIT_FIELD_BYTES_2, 0, cainfo->sheath_state);
+    if (cainfo->sheath_state != 0)
+    {
+        // 0 SheathState
+        // 1 Bytes2Flags
+        // 2 UnitRename         Pet only, so always 0 for default creature
+        // 3 ShapeshiftForm     Must be determined/set by shapeshift spell/aura
+        SetByteValue(UNIT_FIELD_BYTES_2, 0, cainfo->sheath_state);
 
-    if (cainfo->flags != 0)
-        SetByteValue(UNIT_FIELD_BYTES_2, 1, cainfo->flags);
-
-    // SetByteValue(UNIT_FIELD_BYTES_2, 2, 0);
-    // SetByteValue(UNIT_FIELD_BYTES_2, 3, 0);
+        if (cainfo->flags != 0)
+            SetByteValue(UNIT_FIELD_BYTES_2, 1, cainfo->flags);
+            
+        // SetByteValue(UNIT_FIELD_BYTES_2, 2, 0);
+        // SetByteValue(UNIT_FIELD_BYTES_2, 3, 0);
+    }
 
     if (cainfo->emote != 0)
         SetUInt32Value(UNIT_NPC_EMOTESTATE, cainfo->emote);
+    
+    // Set Moveflags
+    if (cainfo->move_flags != 0)
+        m_movementInfo.SetMovementFlags(static_cast<MovementFlags>(cainfo->move_flags));
 
+    // Add Auras
     if (cainfo->auras)
     {
         for (uint32 const* cAura = cainfo->auras; *cAura; ++cAura)
